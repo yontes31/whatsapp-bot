@@ -61,4 +61,15 @@ async function sendWhatsAppMessage(to, message) {
             })
         });
         
-        const data = await r
+        const data = await response.json();
+        console.log('Message sent:', data);
+        return data;
+    } catch (error) {
+        console.error('Error sending message:', error);
+        throw error;
+    }
+}
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
