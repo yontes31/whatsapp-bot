@@ -2,6 +2,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -9,24 +10,16 @@ const port = process.env.PORT || 3000;
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Verify webhook URL for 360dialog
+// Simple route for testing if server is alive
+app.get('/', (req, res) => {
+    res.send('WhatsApp Bot Server is Running!');
+});
+
+// Verify webhook URL for 360dialog with debug logging
 app.get('/webhook', (req, res) => {
-    if (req.query['hub.mode'] === 'subscribe') {
-        return res.status(200).send(req.query['hub.challenge']);
-    }
-    
-    // Handle 360dialog specific test event
-    if (req.query['event_name'] === 'webhook-test-event') {
-        return res.status(200).send('OK');
-    }
-
-    // For any other challenge parameter
-    const challenge = req.query.challenge;
-    if (challenge) {
-        return res.send(challenge);
-    }
-
-    res.status(400).send('Challenge not found');
+    console.log('Received webhook GET request:', req.query);
+    // Always respond with 200 OK for testing
+    res.status(200).send('OK');
 });
 
 // Handle incoming messages
@@ -53,7 +46,7 @@ app.post('/webhook', async (req, res) => {
     }
 });
 
-// Function to send message back to WhatsApp (you'll need this later)
+// Function to send message back to WhatsApp
 async function sendWhatsAppMessage(to, message) {
     try {
         const response = await fetch('https://waba.360dialog.io/v1/messages', {
