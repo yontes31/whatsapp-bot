@@ -15,11 +15,25 @@ app.get('/', (req, res) => {
     res.send('WhatsApp Bot Server is Running!');
 });
 
-// Verify webhook URL for 360dialog with debug logging
+// Update just this webhook GET handler in your server.js
 app.get('/webhook', (req, res) => {
-    console.log('Received webhook GET request:', req.query);
-    // Always respond with 200 OK for testing
-    res.status(200).send('OK');
+    console.log('Webhook test received:', req.query);
+
+    // Handle the webhook test event
+    if (req.query.event_name === 'webhook-test-event') {
+        console.log('Handling test event');
+        return res.status(200).json({ status: 'success' });
+    }
+
+    // Handle Meta/WhatsApp verification
+    if (req.query['hub.mode'] === 'subscribe') {
+        console.log('Handling subscription verification');
+        return res.status(200).send(req.query['hub.challenge']);
+    }
+
+    // Default response
+    console.log('Sending default OK response');
+    return res.status(200).send('OK');
 });
 
 // Handle incoming messages
