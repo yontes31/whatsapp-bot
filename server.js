@@ -36,6 +36,12 @@ app.get('/webhook', (req, res) => {
     return res.status(200).send('OK');
 });
 
+// Add this handler for POST requests to root path
+app.post('/', (req, res) => {
+    console.log('Received POST to root:', req.body);
+    res.status(200).json({ status: 'success' });
+});
+
 // Handle incoming messages
 app.post('/webhook', async (req, res) => {
     try {
@@ -91,8 +97,4 @@ app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
-// Add this handler for POST requests to root path
-app.post('/', (req, res) => {
-    console.log('Received POST to root:', req.body);
-    res.status(200).json({ status: 'success' });
-});
+
