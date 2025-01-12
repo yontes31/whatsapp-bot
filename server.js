@@ -11,11 +11,21 @@ app.use(bodyParser.json());
 
 // Verify webhook URL for 360dialog
 app.get('/webhook', (req, res) => {
-    // 360dialog sends a challenge parameter for verification
+    if (req.query['hub.mode'] === 'subscribe') {
+        return res.status(200).send(req.query['hub.challenge']);
+    }
+    
+    // Handle 360dialog specific test event
+    if (req.query['event_name'] === 'webhook-test-event') {
+        return res.status(200).send('OK');
+    }
+
+    // For any other challenge parameter
     const challenge = req.query.challenge;
     if (challenge) {
         return res.send(challenge);
     }
+
     res.status(400).send('Challenge not found');
 });
 
