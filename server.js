@@ -90,3 +90,9 @@ async function sendWhatsAppMessage(to, message) {
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
+// Add this handler for POST requests to root path
+app.post('/', (req, res) => {
+    console.log('Received POST to root:', req.body);
+    res.status(200).json({ status: 'success' });
+});
